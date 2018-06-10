@@ -6,6 +6,19 @@ body {
     background: linear-gradient(black, purple);
 }
 
+.score-div {
+    height: 100px;
+    margin: 0;
+    margin-top: 150px;
+    width: 10%;
+    float: left;
+    background-color: white;
+    border: 10px double black;
+    clear: left;
+    text-align: center;
+    text-decoration: underline;
+    margin-left: 2%;
+}
 #game {
     border: 10px double black;
     width: 60%;
@@ -13,6 +26,7 @@ body {
     height: 1050px;
     background: linear-gradient(whitesmoke, floralwhite);
     padding: 20px;
+    margin-bottom: 100px;
 }
 
 h1, h2 {
@@ -56,16 +70,33 @@ img {
     font-size: 30px;
     width: 50%;
     margin: auto;
-    margin-bottom: 50px;
 }
 
 @media screen and (max-width: 650px) {
+
     #mystery-word, #guesses-so-far, #message {
         font-size: 20px;
     }
 
+    .score-div {
+        float: left;
+        width: 25%;
+        margin: 0;
+        clear: none;
+        height: 125px;
+    }
+
+    #wins-div {
+        margin-left: 21%;
+    }
+
     #game {
-        height: 800px;
+        height: 600px;
+        clear: both;
+    }
+
+    img {
+        display: none;
     }
 }
 

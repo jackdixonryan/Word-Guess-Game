@@ -17,9 +17,18 @@ var wordList = ["caesar", "hadrian",
                 "trajan",
                 ];
 
+var wins = 0;
+var losses = 0;
+
 
 //The entirety of our program is contained in the hangman function.
 function hangmanGame() {
+
+    var guessCount = 10;
+
+    $("#guesses-so-far").text(guessCount);
+
+    var guessList = [];
 
     //Setting computer choice to a random name in the name list.
     var computerChoice = wordList[Math.floor(Math.random() * wordList.length)];
@@ -56,7 +65,6 @@ function hangmanGame() {
     var lettersLeft = mysteryWord.length;
     console.log("LETTERS LEFT:", lettersLeft); 
     //guess list is initialized as a blank array to be pushed to in the future.
-    var guessList = [];
 
     //@Detect the user's keystroke.
     document.onkeyup = function(event) {
@@ -66,7 +74,9 @@ function hangmanGame() {
         //Also, when 1 letter is remaining, guessing anything at all wins the game. 
 
         //Resets message display.
+
         $("#message").text("");
+
 
         //var letter is the letter chosen by the user.
         var letter = event.key.toLowerCase();
@@ -105,14 +115,18 @@ function hangmanGame() {
 
                             if (lettersLeft === 0) {
                                 $("#mystery-word").text(answer.join(" "));
-                                $("#guesses-so-far").hide();
-                                $("#gl").hide();
+                                $("#guesses-so-far").text("");
             
                                 $("#message").text("You guessed the Roman!");
             
                                 document.getElementById("image").src = "https://thumbs.dreamstime.com/b/statue-trajan-london-uk-bronze-roman-emperor-england-europe-33559147.jpg"
                                 //sets guessList to 10 automatically just to prevent the user from continuing to guess once the word is fully populated.
-                                guessList = 10;
+                                wins = wins + 1;
+                                guessList = [];
+                                if (losses < 10) {
+                                    console.log(losses);
+                                    hangmanGame();
+                                }
                             }
 
                         
@@ -128,10 +142,27 @@ function hangmanGame() {
             } else {
                 $("#message").text("Rome Burns!")
                 document.getElementById("image").src = "https://i.pinimg.com/originals/04/14/2d/04142d36ef30e6862a5189827bef2817.jpg";
+                losses = losses + 1;
+                guessList = [];
+                
+                //I don't know if this is what recursivity means, but I think it does--I needed to call the function again, but I also needed to detect losses changes that were created inside of a narrow scope. This detects the losses count and runs the game again. 
+                if (losses < 10) {
+                    console.log(losses);
+                    hangmanGame();
+                }
             }
         }
-        document.getElementById("guesses-so-far").innerHTML = ( 10 - guessList.length);
+
+        guessCount = 10 - guessList.length;
+
+        document.getElementById("guesses-so-far").innerHTML = guessCount;
+
+        console.log("guessCount is now:", guessCount);
+        $("#wins").text(wins);
+        $("#losses").text(losses)
     } 
 }
 
 hangmanGame();
+
+
