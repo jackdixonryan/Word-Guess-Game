@@ -1,7 +1,9 @@
+
+//A list of names.
 var wordList = ["caesar", "hadrian",
                 "augustus", "antoninus",
                 "tiberius", "lucius",
-                "caligula", "marcus aurelius",
+                "caligula",
                 "claudius", "commodus",
                 "cicero", "cato",
                 "nero", "pompey",
@@ -15,14 +17,14 @@ var wordList = ["caesar", "hadrian",
                 "trajan",
                 ];
 
-var wins = 0; 
 
-console.log("Wins:", wins, "Losses:", losses);
+//The entirety of our program is contained in the hangman function.
+function hangmanGame() {
 
-function hangmanGame(randomWord) {
-
+    //Setting computer choice to a random name in the name list.
     var computerChoice = wordList[Math.floor(Math.random() * wordList.length)];
 
+    //Array word takes the name the computer chose and converts it into an array.
     function arrayWord(word) {
         var arrayWord = [];
         for (i = 0; i < word.length; i++) {
@@ -31,11 +33,12 @@ function hangmanGame(randomWord) {
         return arrayWord;
     }
 
-    //All is well here.
+    //Var answer is an array of individual letter strings that, if combined, form the computer choice word.
     var answer = arrayWord(computerChoice);
+    //using the console to bug check.
     console.log(answer);
 
-
+    //mask word takes the arrayed word and converts it into a series of blanks equal in length to the arrayed word, now called answer.
     function maskWord(word) {
         var maskWord = [];
         var blanks = $("#mystery-word");
@@ -46,16 +49,26 @@ function hangmanGame(randomWord) {
         return maskWord;
     }
 
+    //the masked word, whatever it is, is now stored in the array mystery word.
     var mysteryWord = maskWord(computerChoice);
-    var lettersLeft = mysteryWord.length - 1;
 
+    //PROBLEM: when letterLeft is one fewer than the length of mystery word,  successful game terminates at the right moment. However, an unsuccessful game will take any value if there are letters left and win the game unduly. Conversetly, adding one to this length eliminates the problem of permitting a random letter to end the game, but takes an extra turn to finish the successful game.
+    var lettersLeft = mysteryWord.length;
+    console.log("LETTERS LEFT:", lettersLeft); 
+    //guess list is initialized as a blank array to be pushed to in the future.
     var guessList = [];
 
-    //@onkeyup, a function begins. 
+    //@Detect the user's keystroke.
     document.onkeyup = function(event) {
-        document.getElementById("guesses-so-far").innerHTML = ( 9 - guessList.length);
 
+        //prints guesses remaining, 10 minus the length of guessList. Not the best way to do this, I grant, since having one guess left is tantamount to having 0 guesses left.
+
+        //Also, when 1 letter is remaining, guessing anything at all wins the game. 
+
+        //Resets message display.
         $("#message").text("");
+
+        //var letter is the letter chosen by the user.
         var letter = event.key.toLowerCase();
         //right away, if the entry is not a single char, invalid alert.
         if (letter.length > 1 || guessList.includes(letter)) {
@@ -76,17 +89,32 @@ function hangmanGame(randomWord) {
                     for (var k = 0; k < answer.length; k++) {
                         //if the letter is the same as the letter in the current index in the answer...
                         if (letter === answer[k]){
+
                             //log to see if working
                             console.log("y");
                             //set the index of mysteryWord (which is a blank) equal to the appropriate letter.
                             mysteryWord[k] = answer[k];
 
+                            lettersLeft = lettersLeft - 1;
+                            console.log("Inside for loop, letters left is now:", lettersLeft);
+
+
                             //display the newly populated mystery word.
                             $("#mystery-word").text(mysteryWord.join(" "));
                             console.log(lettersLeft);
 
-                            //decrement letters left. 
-                            lettersLeft--;
+                            if (lettersLeft === 0) {
+                                $("#mystery-word").text(answer.join(" "));
+                                $("#guesses-so-far").hide();
+                                $("#gl").hide();
+            
+                                $("#message").text("You guessed the Roman!");
+            
+                                document.getElementById("image").src = "https://thumbs.dreamstime.com/b/statue-trajan-london-uk-bronze-roman-emperor-england-europe-33559147.jpg"
+                                //sets guessList to 10 automatically just to prevent the user from continuing to guess once the word is fully populated.
+                                guessList = 10;
+                            }
+
                         
                         //Check if answer is not equal to the index of answer(for debugging)    
                         } else if (letter !== answer[k]) {
@@ -94,13 +122,7 @@ function hangmanGame(randomWord) {
                         }
                     }
                 //Once there are no letters left in the word, end the game.
-                } else {
-                    $("#mystery-word").text(answer.join(" "));
-                    $("#message").text("You guessed the Roman!");
-                    document.getElementById("image").src = "https://thumbs.dreamstime.com/b/statue-trajan-london-uk-bronze-roman-emperor-england-europe-33559147.jpg"
-                    //sets guessList to 10 automatically just to prevent the user from continuing to guess once the word is fully populated.
-                    guessList = 10;
-                }
+                } 
             
             //once the user has no guesses remaining, the gqme ends.
             } else {
@@ -108,7 +130,8 @@ function hangmanGame(randomWord) {
                 document.getElementById("image").src = "https://i.pinimg.com/originals/04/14/2d/04142d36ef30e6862a5189827bef2817.jpg";
             }
         }
+        document.getElementById("guesses-so-far").innerHTML = ( 10 - guessList.length);
     } 
-    console.log("WINS:", wins, "LOSSES", losses);
 }
 
+hangmanGame();
