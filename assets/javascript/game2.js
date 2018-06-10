@@ -44,8 +44,6 @@ function hangmanGame() {
 
     //Var answer is an array of individual letter strings that, if combined, form the computer choice word.
     var answer = arrayWord(computerChoice);
-    //using the console to bug check.
-    console.log(answer);
 
     //mask word takes the arrayed word and converts it into a series of blanks equal in length to the arrayed word, now called answer.
     function maskWord(word) {
@@ -61,9 +59,9 @@ function hangmanGame() {
     //the masked word, whatever it is, is now stored in the array mystery word.
     var mysteryWord = maskWord(computerChoice);
 
-    //PROBLEM: when letterLeft is one fewer than the length of mystery word,  successful game terminates at the right moment. However, an unsuccessful game will take any value if there are letters left and win the game unduly. Conversetly, adding one to this length eliminates the problem of permitting a random letter to end the game, but takes an extra turn to finish the successful game.
+
     var lettersLeft = mysteryWord.length;
-    console.log("LETTERS LEFT:", lettersLeft); 
+
     //guess list is initialized as a blank array to be pushed to in the future.
 
     //@Detect the user's keystroke.
@@ -90,7 +88,6 @@ function hangmanGame() {
             if (guessList.length < 10) {
                 //displays the letters they've guessed (W/Repeats)
                 guessList.push(letter);
-                console.log(guessList);
 
                 //If there are still blanks in the word...
                 if (lettersLeft > 0) {
@@ -101,17 +98,14 @@ function hangmanGame() {
                         if (letter === answer[k]){
 
                             //log to see if working
-                            console.log("y");
                             //set the index of mysteryWord (which is a blank) equal to the appropriate letter.
                             mysteryWord[k] = answer[k];
 
                             lettersLeft = lettersLeft - 1;
-                            console.log("Inside for loop, letters left is now:", lettersLeft);
 
 
                             //display the newly populated mystery word.
                             $("#mystery-word").text(mysteryWord.join(" "));
-                            console.log(lettersLeft);
 
                             if (lettersLeft === 0) {
                                 $("#mystery-word").text(answer.join(" "));
@@ -124,7 +118,6 @@ function hangmanGame() {
                                 wins = wins + 1;
                                 guessList = [];
                                 if (losses < 10) {
-                                    console.log(losses);
                                     hangmanGame();
                                 }
                             }
@@ -132,7 +125,7 @@ function hangmanGame() {
                         
                         //Check if answer is not equal to the index of answer(for debugging)    
                         } else if (letter !== answer[k]) {
-                            console.log("n");
+                            continue;
                         }
                     }
                 //Once there are no letters left in the word, end the game.
@@ -147,7 +140,6 @@ function hangmanGame() {
                 
                 //I don't know if this is what recursivity means, but I think it does--I needed to call the function again, but I also needed to detect losses changes that were created inside of a narrow scope. This detects the losses count and runs the game again. 
                 if (losses < 10) {
-                    console.log(losses);
                     hangmanGame();
                 }
             }
@@ -157,7 +149,6 @@ function hangmanGame() {
 
         document.getElementById("guesses-so-far").innerHTML = guessCount;
 
-        console.log("guessCount is now:", guessCount);
         $("#wins").text(wins);
         $("#losses").text(losses)
     } 
