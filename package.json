@@ -1,0 +1,22 @@
+{
+  "name": "word-guess-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackdixonryan/Word-Guess-Game.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jackdixonryan/Word-Guess-Game/issues"
+  },
+  "homepage": "https://github.com/jackdixonryan/Word-Guess-Game#readme",
+  "devDependencies": {
+    "jest": "^28.1.3"
+  }
+}
