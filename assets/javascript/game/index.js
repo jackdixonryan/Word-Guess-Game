@@ -67,9 +67,11 @@ class GuessableWord {
     }
   }
 
-  clearGuesses() {
+  reset() {
     this.allGuesses = [];
     this.lastGuess = null;
+    this.solution = new Array(this.word.length).fill(null);
+    this.isSolved = false;
   }
 }
 

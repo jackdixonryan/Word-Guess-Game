@@ -152,26 +152,6 @@ describe("The GuessableWord", () => {
     expect(() => word.guess("a")).toThrowError("No duplicate guesses.");
   });
 
-  test("There is clearGuesses function.", () => {
-    const word = new GuessableWord("bar");
-    expect(word.clearGuesses).not.toBe(undefined);
-    expect(word.clearGuesses).toBeInstanceOf(Function);
-  });
-
-  test("The clearGuesses function empties the allGuesses array.", () => {
-    const word = new GuessableWord("bar");
-    word.guess("a");
-    word.clearGuesses();
-    expect(word.allGuesses.length).toBe(0);
-  });
-
-  test("The clearGuesses function also nulls lastGuess.", () => {
-    const word = new GuessableWord("bar");
-    word.guess("a");
-    word.clearGuesses();
-    expect(word.lastGuess).toBe(null);
-  });
-
   test("The GuessableWord has a solution, which is an array of null values equal in length to the word argument.", () => {
     const word = new GuessableWord("bar");
     expect(word.solution).not.toBe(undefined);
@@ -211,5 +191,47 @@ describe("The GuessableWord", () => {
     expect(word.isSolved).toBe(false);
     word.guess("b");
     expect(word.isSolved).toBe(true);
+  });
+
+  test("The GuessableWord has a reset function.", () => {
+    const word = new GuessableWord("bar");
+    expect(word.reset).not.toBe(undefined);
+    expect(word.reset).toBeInstanceOf(Function);
+  });
+
+  test("The reset function sets the solution array to null values.", () => {
+    const word = new GuessableWord("bar");
+    word.guess("a");
+    word.guess("r");
+    word.guess("b");
+    word.reset();
+    expect(word.solution).toEqual([null, null, null]);
+  });
+
+  test("The reset function sets the allGuesses array to an empty array.", () => {
+    const word = new GuessableWord("bar");
+    word.guess("a");
+    word.guess("r");
+    word.guess("b");
+    word.reset();
+    expect(word.allGuesses).toEqual([]);
+  });
+
+  test("The reset function sets the lastGuess property to null.", () => {
+    const word = new GuessableWord("bar");
+    word.guess("a");
+    word.guess("r");
+    word.guess("b");
+    word.reset();
+    expect(word.lastGuess).toBe(null);
+  });
+
+  test("The reset function sets the isSolved property to false.", () => {
+    const word = new GuessableWord("bar");
+    word.guess("a");
+    word.guess("r");
+    word.guess("b");
+    word.reset();
+    expect(word.isSolved).toBe(false);
   });
 });
