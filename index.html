@@ -7,10 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
     <link href="https://fonts.googleapis.com/css?family=Bungee+Inline|IM+Fell+French+Canon+SC" rel="stylesheet">
-    <script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -29,11 +25,56 @@
         <img id= "image" src="https://cdn.britannica.com/700x450/11/196711-004-094BB97D.jpg">
         <p id="message"></p>
         <h2 id="gl">Guesses Left</h2>
-        <p id="guesses-so-far"></p>
+        <p id="guesses-left"></p>
         <h2>Mystery Roman</h2>
         <p id="mystery-word"></p>
     </div>
 
 
-    <script src="assets/javascript/game2.js"></script>
+    <script src="assets/javascript/game/index.js"></script>
+    <script>
+        const game = new Hangman(["caligula", "caesar", "trajan", "hadrian"]);
+        const wins = document.getElementById("wins");
+        const losses = document.getElementById("losses");
+        const guessesLeftElement = document.getElementById("guesses-left");
+        const guessesLeft = game.maxGuesses - game.guesses;
+        const mysteryWordElement = document.getElementById("mystery-word");
+        const messageElement = document.getElementById("message");
+    
+        refreshRender();
+        messageElement.innerHTML = "Press a key to make a guess!";
+        
+        document.addEventListener("keydown", function(event) {
+            const key = event.key;
+            console.log({key});
+            if (!game.isStarted && key === " ") {
+                event.preventDefault();
+                game.start();
+                refreshRender();
+            } else {
+                game.guess(key);
+                refreshRender();
+                if (game.isStarted === false) {
+                    mysteryWordElement.innerHTML = game.currentWord.word;
+                    messageElement.innerHTML = "Press space to play again!";
+                }
+            }
+        });
+
+        function renderWord() {
+            return game.currentWord.solution.map(function(letter) {
+                return letter ? letter : " _ ";
+            }).join("");
+        }
+
+        function refreshRender() {
+            const guessesLeft = game.maxGuesses - game.guesses;
+            wins.innerHTML = game.wins;
+            losses.innerHTML = game.losses;
+            guessesLeftElement.innerHTML = guessesLeft;
+            mysteryWordElement.innerHTML = renderWord();
+            messageElement.innerHTML = game.currentWord.allGuesses.join(" ");
+        }
+
+    </script>
 </body>

@@ -1,4 +1,3 @@
-
 class Hangman {
   constructor(list) {
     if (!list) {
@@ -14,11 +13,68 @@ class Hangman {
       throw new Error("The list must contain strings.");
     }
     this.list = list;
+    this.currentWord = null;
+    this.chooseElement();
+
+    this.guesses = 0;
+    this.wins = 0;
+    this.losses = 0;
+    this.maxGuesses = 10;
+    this.isStarted = true;
+  }
+
+  start() { 
+    this.isStarted = true;
+    this.chooseElement();
+    this.guesses = 0;
+  }
+
+  stop() {
+    this.isStarted = false;
+  }
+
+  guess(char) {
+    if (typeof char !== "string") {
+      throw new Error("char must be a string.");
+    }
+
+    if (char.length !== 1) {
+      throw new Error("char must be a single character.");
+    }
+
+    if (!this.isStarted) {
+      throw new Error("The game is not started.");
+    }
+    char = char.toLowerCase();
+    this.currentWord.guess(char);
+    this.guesses++;
+
+    if (this.currentWord.isSolved) {
+      this.endRound();
+    }
+    if (this.guesses === this.maxGuesses) {
+      this.endRound();
+    }
   }
 
   chooseElement() {
     const randomIndex = Math.floor(Math.random() * this.list.length);
-    return this.list[randomIndex];
+    const word = this.list[randomIndex];
+    if (this.currentWord && this.currentWord.word === word && this.list.length > 1) {
+      return this.chooseElement();
+    } else {
+      this.currentWord = new GuessableWord(word);
+    }
+  }
+
+  endRound() {
+    if (this.currentWord.isSolved) {
+      this.wins++;
+      this.stop();
+    } else {
+      this.losses++;
+      this.stop();
+    }
   }
 }
 
@@ -75,4 +131,4 @@ class GuessableWord {
   }
 }
 
-module.exports = { Hangman, GuessableWord };
+// module.exports = { Hangman, GuessableWord };

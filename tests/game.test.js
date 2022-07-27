@@ -43,18 +43,154 @@ describe("The Roman Hangman Game", () => {
     expect(hangman.chooseElement).toBeInstanceOf(Function);
   });
 
-  test("The chooseElement function returns a string.", () => {
+  test("The game has a currentWord property.", () => {
     const hangman = new Hangman(["foo"]);
-    expect(typeof hangman.chooseElement()).toBe("string");
+    expect(hangman.currentWord).not.toBe(undefined);
+    expect(hangman.currentWord).toBeInstanceOf(GuessableWord);
   });
 
-  test("The chooseElement function returns one of the elements of the list.", () => {
+  test("The chooseElement function sets the currentWord.", () => {
     const hangman = new Hangman(["foo"]);
-    expect(hangman.chooseElement()).toBe("foo");
-
-    const secondHangman = new Hangman(["bar"]);
-    expect(secondHangman.chooseElement()).toBe("bar");
+    hangman.chooseElement();
+    expect(hangman.currentWord).toBeInstanceOf(GuessableWord);
+    expect(hangman.currentWord.word).toBe("foo");
   });
+
+  test("The chooseElement function selects a different word than the previous when possible.", () => {
+    const hangman = new Hangman(["foo", "bar"]);
+    hangman.chooseElement();
+    const originalWord = hangman.currentWord.word;
+    hangman.chooseElement();
+    const newWord = hangman.currentWord.word;
+    expect(newWord).not.toBe(originalWord);
+  })
+
+  test("The game has a wins property that starts at 0.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.wins).toBe(0);
+  });
+
+  test("The game has a losses property that starts at 0.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.losses).toBe(0);
+  });
+
+  test("The game has a maxGuesses property.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.maxGuesses).not.toBe(undefined);
+    expect(hangman.maxGuesses).toBe(10);
+  });
+
+  test("The game has a guesses property that starts at 0.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.guesses).toBe(0);
+  });
+
+  test("The game has a guess function.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.guess).not.toBe(undefined);
+    expect(hangman.guess).toBeInstanceOf(Function);
+  });
+
+  test("The guess function throws an error if the argument is not a string.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(() => {
+      hangman.guess(1)
+    }).toThrowError("char must be a string.");
+  });
+
+  test("The guess function throws an error if the argument is not a single character.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(() => {
+      hangman.guess("fo")
+    }).toThrowError("char must be a single character.");
+  });
+
+  test("When the guess function succeeds, the game increments the guesses property.", () => {
+    const hangman = new Hangman(["foo"]);
+    hangman.guess("f");
+    expect(hangman.guesses).toBe(1);
+  });
+
+  test("The game has an endRound function.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.endRound).not.toBe(undefined);
+    expect(hangman.endRound).toBeInstanceOf(Function);
+  });
+
+  test("The endRound function increments the wins property if the game is won.", () => {
+    const hangman = new Hangman(["foo"]);
+    hangman.guess("f");
+    hangman.guess("o");
+    hangman.endRound();
+    expect(hangman.wins).toBe(1);
+  });
+
+  test("When guesses is equal to maxGuesses, the game increments the losses property.", () => {
+    const hangman = new Hangman(["foo"]);
+    hangman.guess("a");
+    hangman.guess("b");
+    hangman.guess("c");
+    hangman.guess("d");
+    hangman.guess("e");
+    hangman.guess("g");
+    hangman.guess("h");
+    hangman.guess("i");
+    hangman.guess("j");
+    hangman.guess("k");
+    expect(hangman.losses).toBe(1);
+  });
+
+  test("The game has an isStarted property that starts as true.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.isStarted).toBe(true);
+  });
+
+  test("The game has a start function.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.start).not.toBe(undefined);
+    expect(hangman.start).toBeInstanceOf(Function);
+  });
+
+  test("The start function sets the isStarted property to true.", () => {
+    const hangman = new Hangman(["foo"]);
+    hangman.start();
+    expect(hangman.isStarted).toBe(true);
+  });
+
+  test("The game has a stop function.", () => {
+    const hangman = new Hangman(["foo"]);
+    expect(hangman.stop).not.toBe(undefined);
+    expect(hangman.stop).toBeInstanceOf(Function);
+  });
+
+  test("The stop function sets the isStarted property to false.", () => {
+    const hangman = new Hangman(["foo"]);
+    hangman.start();
+    hangman.stop();
+    expect(hangman.isStarted).toBe(false);
+  });
+
+  test("Starting the game resets the guesses property and the currentWord.", () => {
+    const hangman = new Hangman(["foo", "bar", "baz"]);
+    const originalWord = hangman.currentWord.word;
+    hangman.start();
+    hangman.guess("f");
+    hangman.guess("o");
+    hangman.stop();
+    hangman.start();
+    expect(hangman.guesses).toBe(0);
+    expect(hangman.currentWord.word).not.toBe(originalWord);
+  });
+
+  test("Guessing is not possible when the game is not started.", () => {
+    const hangman = new Hangman(["foo"]);
+    hangman.stop();
+    expect(() => {
+      hangman.guess("f");
+    }).toThrowError("The game is not started.");
+  });
+
 });
 
 describe("The GuessableWord", () => {

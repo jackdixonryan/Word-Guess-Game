@@ -71,6 +71,11 @@ img {
     margin: auto;
 }
 
+#guesses-left {
+    font-size: 30px;
+    text-align: center;
+}
+
 @media screen and (max-width: 650px) {
 
     #mystery-word, #guesses-so-far, #message {
